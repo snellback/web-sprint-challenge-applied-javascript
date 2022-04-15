@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const Card = (article) => {
   // TASK 5
   // ---------------------
@@ -17,6 +19,34 @@ const Card = (article) => {
   //   </div>
   // </div>
   //
+  const card = document.createElement('div');
+  const headline = document.createElement('div');
+  const author = document.createElement('div');
+  const imgContainer = document.createElement('div');
+  const authorPhoto = document.createElement('img');
+  const authorName = document.createElement('span');
+
+  card.classList.add('card');
+  headline.classList.add('headline');
+  author.classList.add('author');
+  imgContainer.classList.add('img-container');
+
+  headline.textContent = article.headline;
+  authorPhoto.src = article.authorPhoto;
+  authorPhoto.alt = "Author Photo";
+  authorName.textContent = article.authorName;
+
+  card.appendChild(headline);
+  card.appendChild(author);
+  author.appendChild(imgContainer);
+  imgContainer.appendChild(authorPhoto);
+  author.appendChild(authorName);
+
+  card.addEventListener("click", () => {
+    console.log(article.headline);
+  });
+
+  return card;
 }
 
 const cardAppender = (selector) => {
@@ -28,6 +58,30 @@ const cardAppender = (selector) => {
   // Create a card from each and every article object in the response, using the Card component.
   // Append each card to the element in the DOM that matches the selector passed to the function.
   //
+  const entryPoint = document.querySelector(selector);
+  axios.get(`http://localhost:5001/api/articles`)
+    .then(resp => {
+      console.log(resp);
+      resp.data.articles.bootstrap.forEach(article => {
+        entryPoint.append(Card(article));
+        // article.forEach(item => {
+        //   entryPoint.append(Card(item));
+        // })
+      })
+      resp.data.articles.javascript.forEach(article => {
+        entryPoint.append(Card(article));
+      })
+      resp.data.articles.jquery.forEach(article => {
+        entryPoint.append(Card(article));
+      })
+      resp.data.articles.node.forEach(article => {
+        entryPoint.append(Card(article));
+      })
+      resp.data.articles.technology.forEach(article => {
+        entryPoint.append(Card(article));
+      })
+    })
+    .catch(err => console.log(err))
 }
 
 export { Card, cardAppender }
